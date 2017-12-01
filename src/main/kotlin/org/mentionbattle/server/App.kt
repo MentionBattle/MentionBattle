@@ -1,5 +1,11 @@
 package org.mentionbattle.server
 
-fun main(args : Array<String>) {
+import io.javalin.Javalin
 
+fun main(args : Array<String>) {
+    val app = Javalin.create()
+            .port(7777)
+            .enableStaticFiles("/public")
+            .start()
 }
+

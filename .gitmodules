@@ -1,0 +1,4 @@
+[submodule "src/main/resources/public"]
+	path = src/main/resources/public
+	url = https://github.com/mentionbattle/mentionbattle.js
+	branch = build
