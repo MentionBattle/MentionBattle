@@ -8,11 +8,11 @@ import org.eclipse.jetty.websocket.api.Session
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-val initialMessage = "init|{\"contender1\":{\"votes\": 1000, \"rate\": 900, \"last\": [" +
+val initialMessage = "init|{\"contender1\":{\"name\": \"Volodya\", \"votes\": 1000, \"rate\": 900, \"last\": [" +
         "{\"from\": \"twitter\", \"name\": \"asdzxc\", \"text\": \"asdzxc\", \"timestamp\": \"2017-12-02T02:51:15.952Z\"}," +
         "{\"from\": \"vk\", \"name\": \"123456\", \"text\": \"123456\", \"timestamp\": \"2017-12-02T02:52:15.952Z\"}" +
         "]}," +
-        "\"contender2\": {" +
+        "\"contender2\": {\"name\": \"Ivan\"," +
         "\"votes\": 800, \"rate\": 200, \"last\": [" +
         "{\"from\": \"twitter\", \"name\": \"asdzxc\", \"text\": \"asdzxc\", \"timestamp\": \"2017-12-02T02:51:15.952Z\"}," +
         "{\"from\": \"vk\", \"name\": \"123456\", \"text\": \"123456\", \"timestamp\": \"2017-12-02T02:52:15.952Z\"}" +
