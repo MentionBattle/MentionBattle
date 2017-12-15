@@ -24,9 +24,9 @@ class Server(configuration: Configuration) {
         }
     }
 
-    private fun createApp(initialMessage: String) {
+    private fun createApp(snaClient : SnaClient) {
         if (app != null) {
-            createBroadcast(initialMessage)
+            createBroadcast(snaClient.initialMessage)
         } else {
             app = Javalin.create().
                     enableStaticFiles("/public")
@@ -35,7 +35,7 @@ class Server(configuration: Configuration) {
                         run {
                             ws.onConnect({ session ->
                                 sessions.add(session)
-                                session.send(initialMessage)
+                                session.send(snaClient.initialMessage)
                                 println("smbd connected")
                             })
                             ws.onClose({ session, statusCode, reason -> toRemove.add(session) })
