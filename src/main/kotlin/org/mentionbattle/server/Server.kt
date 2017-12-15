@@ -2,6 +2,7 @@ package org.mentionbattle.server
 
 import io.javalin.Javalin
 import io.javalin.embeddedserver.jetty.websocket.WsSession
+import org.eclipse.jetty.websocket.api.Session
 import org.mentionbattle.configuration.Configuration
 import java.net.SocketException
 
@@ -10,7 +11,6 @@ class Server(configuration: Configuration) {
     private var app: Javalin? = null
     private lateinit var snaClient: SnaClient
     private val sessions = mutableListOf<WsSession>()
-    private val toRemove = mutableListOf<WsSession>()
 
     fun start() {
         while (true) {
@@ -38,7 +38,7 @@ class Server(configuration: Configuration) {
                                 sessions.add(session)
                                 println("smbd connected")
                             })
-                            ws.onClose({ session, statusCode, reason -> toRemove.add(session) })
+                            ws.onClose({ session, statusCode, reason ->  sessions.remove(session) })
                         }
                     })
                     .start()
@@ -46,11 +46,14 @@ class Server(configuration: Configuration) {
     }
 
     private fun createBroadcast(msg: String) {
-        synchronized(sessions) {
-            toRemove.forEach { t -> sessions.remove(t) }
-            toRemove.clear()
-            sessions.forEach { s -> s.send(msg) }
-        }
+
+        sessions.stream().filter(Session::isOpen).forEach({session ->
+            try {
+                session.remote.sendString(msg)
+            } catch (e : Exception){
+                println(e)
+            }
+        })
     }
 }
 
