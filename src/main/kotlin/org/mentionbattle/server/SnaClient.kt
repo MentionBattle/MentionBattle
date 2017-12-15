@@ -26,8 +26,13 @@ class SnaClient(config: Configuration, onFirstMessageReceived: (SnaClient) -> Un
             val json = JSONObject(client.readString())
             val rateA = json["rateA"] as Int
             val rateB = json["rateB"] as Int
-            ((initialJSON["contenders"] as JSONArray)[0] as JSONObject).put("rate", rateA)
-            ((initialJSON["contenders"] as JSONArray)[1] as JSONObject).put("rate", rateB)
+
+            println(rateA)
+            println(rateB)
+
+
+            ((initialJSON["contenders"] as JSONArray)[0] as JSONObject).put("votes", rateA)
+            ((initialJSON["contenders"] as JSONArray)[1] as JSONObject).put("votes", rateB)
             val contenderB = (initialJSON["contenders"] as JSONArray)[0] as JSONObject
 
             onDataReceived("mention|" + json["event"])
