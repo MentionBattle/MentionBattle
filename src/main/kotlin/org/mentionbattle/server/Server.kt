@@ -34,8 +34,8 @@ class Server(configuration: Configuration) {
                     { ws ->
                         run {
                             ws.onConnect({ session ->
-                                sessions.add(session)
                                 session.send(snaClient.initialMessage)
+                                sessions.add(session)
                                 println("smbd connected")
                             })
                             ws.onClose({ session, statusCode, reason -> toRemove.add(session) })
@@ -46,9 +46,11 @@ class Server(configuration: Configuration) {
     }
 
     private fun createBroadcast(msg: String) {
-        toRemove.forEach { t -> sessions.remove(t) }
-        toRemove.clear()
-        sessions.forEach { s -> s.send(msg) }
+        synchronized(sessions) {
+            toRemove.forEach { t -> sessions.remove(t) }
+            toRemove.clear()
+            sessions.forEach { s -> s.send(msg) }
+        }
     }
 }
 
