@@ -21,6 +21,7 @@ class Server(configuration: Configuration) {
                 System.err.println("An error occurer in snaClient, reconnecting")
                 System.err.println(e.message)
             }
+            Thread.sleep(15000)
         }
     }
 
@@ -38,7 +39,11 @@ class Server(configuration: Configuration) {
                                 sessions.add(session)
                                 println("smbd connected")
                             })
-                            ws.onClose({ session, statusCode, reason ->  sessions.remove(session) })
+                            ws.onClose({ session, statusCode, reason ->
+                                synchronized(session) {
+                                    sessions.remove(session)
+                                }
+                            })
                         }
                     })
                     .start()
@@ -46,14 +51,15 @@ class Server(configuration: Configuration) {
     }
 
     private fun createBroadcast(msg: String) {
-
-        sessions.stream().filter(Session::isOpen).forEach({session ->
-            try {
-                session.remote.sendString(msg)
-            } catch (e : Exception){
-                println(e)
-            }
-        })
+        synchronized(sessions) {
+            sessions.stream().filter(Session::isOpen).forEach({ session ->
+                try {
+                    session.remote.sendString(msg)
+                } catch (e: Exception) {
+                    println(e)
+                }
+            })
+        }
     }
 }
 
